@@ -4,7 +4,7 @@ stages:
       - publishImageConfig:
           dockerfilePath: ./Dockerfile
           buildContext: .
-          tag: minvar/sample-api
+          tag: amr-registry-pre.caas.intel.com/pse-pswe-software-ba/autodeployment:test
           pushRemote: true
           registry: amr-registry-pre.caas.intel.com
 
