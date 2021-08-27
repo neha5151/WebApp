@@ -11,4 +11,4 @@ stages:
   - name: Deploy
     steps:
       - applyYamlConfig:
-          path: ./kubernetes.yaml
+          path: ./autodeployment.yaml
