@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-rancher-deployment
+spec:
+  selector:
+    matchLabels:
+      app: node-rancher-deployment
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: node-rancher-deployment
+    spec:
+      containers:
+      - name: node-rancher-deployment
+        image: amr-registry-pre.caas.intel.com/pse-pswe-software-ba/autodeployment:NodeRanchertest
+        ports:
+        - containerPort: 80

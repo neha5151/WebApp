@@ -4,15 +4,11 @@ stages:
       - publishImageConfig:
           dockerfilePath: ./dockerfile
           buildContext: .
-          tag: amr-registry-pre.caas.intel.com/pse-pswe-software-ba/autodeployment:nodetest1
+          tag: NodeRanchertest
           pushRemote: true
           registry: amr-registry-pre.caas.intel.com/pse-pswe-software-ba
-          cpuRequest: 100m
-          cpuLimit: 1
-          memoryRequest : 500Mi
-          memoryLimit: 1Gi
 
   - name: Deploy
     steps:
       - applyYamlConfig:
-          path: ./autodeployment.yaml
+          path: ./deployment.yaml
