@@ -39,7 +39,6 @@ pipeline {
           checkout scm
           withCredentials([file(credentialsId: 'amr.kubeconfig.testing', variable: 'kubeconfig')]) {
             sh """
-              kubectl --kubeconfig=${kubeconfig} --namespace=default delete deployment.apps/hello-world-webpage
               kubectl --kubeconfig=${kubeconfig} --namespace=default apply -f web_page_deployment.yml
               """  
         }
