@@ -11,7 +11,7 @@ spec:
     tty: true
     imagePullPolicy: Always
   - name: kubectl
-    image: lachlanevenson/k8s-kubectl:latest
+    image:  amr-registry-pre.caas.intel.com/pse-pswe-software-ba/k8s-kubectl:latest
     tty: true
     imagePullPolicy: Always
     command:
