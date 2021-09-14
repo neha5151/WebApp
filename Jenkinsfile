@@ -38,9 +38,10 @@ pipeline {
         container("kubectl"){
           checkout scm
           withCredentials([file(credentialsId: 'amr-fm-tools-fqdn.idoc.kubectl', variable: 'kubectl')]) {
+            sh """
               kubectl --kubeconfig=${kubectl} --namespace=default delete deployment.apps/hello-world-webpage
               kubectl --kubeconfig=${kubectl} --namespace=default apply -f web_page_deployment.yml
-             
+              """  
         }
       }
     }
