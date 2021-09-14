@@ -1,39 +1,50 @@
+#!groovy
+def dockerRegistry = 'amr-registry.caas.intel.com'
+def containerImage = "${dockerRegistry}/owr/ex-httpd:latest"
+def kubectlpodDefinitionYaml = """
+kind: Pod
+apiVersion: v1
+spec:
+  containers:
+  - name: jnlp
+    image: ${dockerRegistry}/owr/jnlp-slave:latest
+    tty: true
+    imagePullPolicy: Always
+  - name: kubectl
+    image: lachlanevenson/k8s-kubectl:latest
+    tty: true
+    imagePullPolicy: Always
+    command:
+    - /bin/sh
+    args:
+    - -c
+    - cat
+"""
+
 pipeline {
-    agent any
-    environment {
-        PROJECT_ID = 'autodeployment:NodeRanchertest'
-        CLUSTER_NAME = 'amr-registry-pre.caas.intel.com/pse-pswe-software-ba'
-        LOCATION = 'https://amr-pre.caas.intel.com/pse-pswe-software-ba/'
-        CREDENTIALS_ID = 'nehashar'
+
+  agent none
+
+  stages {
+    stage('Re-deploy') {
+      agent {
+        kubernetes {
+          cloud "rancher_kubernetes"
+          label "ex-kubectl-${UUID.randomUUID().toString()}"
+          yaml kubectlpodDefinitionYaml
+        }
+      }
+      steps {
+        container("kubectl"){
+          checkout scm
+          withCredentials([file(credentialsId: 'amr-fm-tools-fqdn.idoc.kubectl', variable: 'kubectl')]) {
+            sh """
+              kubectl --kubeconfig=${kubectl} --namespace=default delete deployment.apps/hello-world-webpage
+              kubectl --kubeconfig=${kubectl} --namespace=default apply -f web_page_deployment.yml
+            """
+        }
+      }
     }
-    stages {
-        stage("Checkout code") {
-            steps {
-                checkout scm
-            }
-        }
-        stage("Build image") {
-            steps {
-                script {
-                    myapp = docker.build("nehashar/amr-pre.caas.intel.com/pse-pswe-software-ba/hello:${env.BUILD_ID}")
-                }
-            }
-        }
-        stage("Push image") {
-            steps {
-                script {
-                    docker.withRegistry('https://amr-pre.caas.intel.com/pse-pswe-software-ba/', 'dockerhub') {
-                            myapp.push("latest")
-                            myapp.push("${env.BUILD_ID}")
-                    }
-                }
-            }
-        }        
-        stage('Deploy to GKE') {
-            steps{
-                sh "sed -i 's/hello:latest/hello:${env.BUILD_ID}/g' deployment.yaml"
-                step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'deployment.yaml', credentialsId: env.CREDENTIALS_ID, verifyDeployments: true])
-            }
-        }
-    }    
+  }
+  }
 }
