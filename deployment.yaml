@@ -13,8 +13,8 @@ spec:
       paths:
       - backend:
           serviceName: node-rancher-deployment-service
-          servicePort: 80
-
+          servicePort: 8095
+              
 ---
 apiVersion: v1
 kind: Service
@@ -25,7 +25,7 @@ metadata:
     app: node-rancher-deployment
 spec:
   ports:
-  - port: 80
+  - port: 95
   selector:
     app: node-rancher-deployment
 
@@ -48,4 +48,4 @@ spec:
       - name: node-rancher-deployment
         image: amr-registry-pre.caas.intel.com/pse-pswe-software-ba/autodeployment:NodeRanchertest
         ports:
-        - containerPort: 80
+        - containerPort: 95
