@@ -11,9 +11,8 @@ spec:
   - host: node-rancher-deployment.idoc.intel.com
     http:
       paths:
-      - path: /testpath
-        pathType: Prefix
-         backend:
+      - path: /foo/.*
+        - backend:
           serviceName: node-rancher-deployment-service
           servicePort: 8095
               
