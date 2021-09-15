@@ -39,7 +39,7 @@ pipeline {
           checkout scm
           withCredentials([file(credentialsId: 'amr.kubeconfig.testing', variable: 'kubeconfig')]) {
             sh """
-              kubectl --kubeconfig=${kubeconfig} --namespace=pse-pswe-software-ba apply -f deployment.yaml
+              kubectl --kubeconfig=${kubeconfig} --namespace=default -f deployment.yaml
               """  
         }
       }
