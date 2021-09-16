@@ -39,6 +39,7 @@ pipeline {
           checkout scm
           withCredentials([file(credentialsId: 'amr.kubeconfig.testing', variable: 'kubeconfig')]) {
             sh """
+              kubectl --kubeconfig=${kubeconfigfile} --namespace=pse-pswe-software-ba delete deployment.apps/node-rancher-deployment
               kubectl --kubeconfig=${kubeconfig} --namespace=pse-pswe-software-ba apply -f deployment.yaml --validate=false
               """  
         }
